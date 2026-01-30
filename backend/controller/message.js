@@ -2,8 +2,9 @@ const Messages = require("../model/messages");
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const express = require("express");
-const path = require ("path");
+const path = require("path");
 const { upload } = require("../multer");
+const cloudinary = require("cloudinary");
 const router = express.Router();
 
 // create new message
@@ -15,9 +16,14 @@ router.post(
       const messageData = req.body;
 
       if (req.file) {
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename);
-        messageData.images = fileUrl;
+        const fileBase64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        const myCloud = await cloudinary.v2.uploader.upload(fileBase64, {
+          folder: "messages",
+        });
+        messageData.images = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
       }
 
       messageData.conversationId = req.body.conversationId;

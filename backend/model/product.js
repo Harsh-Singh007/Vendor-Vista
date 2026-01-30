@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
   },
   originalPrice: {
     type: Number,
-    
+
   },
   discountPrice: {
     type: Number,
@@ -30,7 +30,14 @@ const productSchema = new mongoose.Schema({
   },
   images: [
     {
-      type: String,
+      public_id: {
+        type: String,
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
     },
   ],
   reviews: [
@@ -47,7 +54,7 @@ const productSchema = new mongoose.Schema({
       productId: {
         type: String,
       },
-      createdAt:{
+      createdAt: {
         type: Date,
         default: Date.now(),
       }

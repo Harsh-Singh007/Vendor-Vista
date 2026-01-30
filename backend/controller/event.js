@@ -6,6 +6,7 @@ const Event = require("../model/event");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller, isAdmin, isAuthenticated } = require("../middleware/auth");
 const router = express.Router();
+const cloudinary = require("cloudinary");
 const fs = require("fs");
 
 // create event
@@ -20,10 +21,22 @@ router.post(
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        const imagesLinks = [];
+
+        for (let i = 0; i < files.length; i++) {
+          const fileBase64 = `data:${files[i].mimetype};base64,${files[i].buffer.toString('base64')}`;
+          const result = await cloudinary.v2.uploader.upload(fileBase64, {
+            folder: "events",
+          });
+
+          imagesLinks.push({
+            public_id: result.public_id,
+            url: result.secure_url,
+          });
+        }
 
         const eventData = req.body;
-        eventData.images = imageUrls;
+        eventData.images = imagesLinks;
         eventData.shop = shop;
 
         const product = await Event.create(eventData);
@@ -78,16 +91,11 @@ router.delete(
 
       const eventData = await Event.findById(productId);
 
-      eventData.images.forEach((imageUrl) => {
-        const filename = imageUrl;
-        const filePath = `uploads/${filename}`;
-
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      });
+      for (let i = 0; i < eventData.images.length; i++) {
+        const result = await cloudinary.v2.uploader.destroy(
+          eventData.images[i].public_id
+        );
+      }
 
       const event = await Event.findByIdAndDelete(productId);
 

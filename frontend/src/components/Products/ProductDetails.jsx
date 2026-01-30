@@ -85,7 +85,7 @@ const ProductDetails = ({ data }) => {
       0
     );
 
-  const avg =  totalRatings / totalReviewsLength || 0;
+  const avg = totalRatings / totalReviewsLength || 0;
 
   const averageRating = avg.toFixed(2);
 
@@ -120,7 +120,7 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={`${backend_url}${data && data.images[select]}`}
+                  src={data && data.images[select]?.url}
                   alt=""
                   className="w-[80%]"
                 />
@@ -128,12 +128,12 @@ const ProductDetails = ({ data }) => {
                   {data &&
                     data.images.map((i, index) => (
                       <div
-                        className={`${
-                          select === 0 ? "border" : "null"
-                        } cursor-pointer`}
+                        key={index}
+                        className={`${select === index ? "border" : ""
+                          } cursor-pointer`}
                       >
                         <img
-                          src={`${backend_url}${i}`}
+                          src={i?.url}
                           alt=""
                           className="h-[200px] overflow-hidden mr-3 mt-3"
                           onClick={() => setSelect(index)}
@@ -141,9 +141,8 @@ const ProductDetails = ({ data }) => {
                       </div>
                     ))}
                   <div
-                    className={`${
-                      select === 1 ? "border" : "null"
-                    } cursor-pointer`}
+                    className={`${select === 1 ? "border" : "null"
+                      } cursor-pointer`}
                   ></div>
                 </div>
               </div>
@@ -152,10 +151,10 @@ const ProductDetails = ({ data }) => {
                 <p>{data.description}</p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}`}>
-                  ₹ {data.discountPrice}
+                    ₹ {data.discountPrice}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? "₹ "+data.originalPrice  : null}
+                    {data.originalPrice ? "₹ " + data.originalPrice : null}
                   </h3>
                 </div>
 
@@ -208,7 +207,7 @@ const ProductDetails = ({ data }) => {
                 <div className="flex items-center pt-8">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
-                      src={`${backend_url}${data?.shop?.avatar}`}
+                      src={data?.shop?.avatar?.url}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
@@ -314,7 +313,7 @@ const ProductDetailsInfo = ({
             data.reviews.map((item, index) => (
               <div className="w-full flex my-2">
                 <img
-                  src={`${backend_url}/${item.user.avatar}`}
+                  src={item.user.avatar?.url}
                   alt=""
                   className="w-[50px] h-[50px] rounded-full"
                 />
@@ -342,7 +341,7 @@ const ProductDetailsInfo = ({
             <Link to={`/shop/preview/${data.shop._id}`}>
               <div className="flex items-center">
                 <img
-                  src={`${backend_url}${data?.shop?.avatar}`}
+                  src={data?.shop?.avatar?.url}
                   className="w-[50px] h-[50px] rounded-full"
                   alt=""
                 />

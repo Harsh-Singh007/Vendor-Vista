@@ -21,7 +21,7 @@ import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 
-const ProductCard = ({ data,isEvent }) => {
+const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
@@ -67,7 +67,7 @@ const ProductCard = ({ data,isEvent }) => {
         <div className="flex justify-end"></div>
         <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
           <img
-            src={`${backend_url}${data.images && data.images[0]}`}
+            src={data.images && data.images[0]?.url}
             alt=""
             className="w-full h-[170px] object-contain"
           />
@@ -81,19 +81,19 @@ const ProductCard = ({ data,isEvent }) => {
           </h4>
 
           <div className="flex">
-          <Ratings rating={data?.ratings} />
+            <Ratings rating={data?.ratings} />
           </div>
 
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
               <h5 className={`${styles.productDiscountPrice}`}>
-              ₹ {data.originalPrice === 0
+                ₹ {data.originalPrice === 0
                   ? data.originalPrice
                   : data.discountPrice}
-                
+
               </h5>
               <h4 className={`${styles.price}`}>
-                {data.originalPrice ? "₹ "+data.originalPrice  : null}
+                {data.originalPrice ? "₹ " + data.originalPrice : null}
               </h4>
             </div>
             <span className="font-[400] text-[17px] text-[#68d284]">

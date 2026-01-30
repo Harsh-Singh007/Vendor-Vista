@@ -14,6 +14,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "./uploads")));
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
 app.use("/test", (req, res) => {
   res.send("Hello world!");
 });
